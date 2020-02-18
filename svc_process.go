@@ -1,0 +1,40 @@
+package lokalise
+
+import "fmt"
+
+const (
+	pathProcesses = "processes"
+)
+
+// ProcessService handles communication with the Process related
+// methods of the Lokalise API.
+//
+// Lokalise API docs: https://lokalise.com/api2docs/curl/#resource-Processes
+type ProcessService struct {
+	BaseService
+}
+
+// ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+// Service entity objects
+// _____________________________________________________________________________________________________________________
+
+type Process struct {
+	WithCreationTime
+
+	ProcessID string `json:"process_id"`
+	Type      string `json:"type"`
+	Status    string `json:"status"`
+}
+
+func (c *ProcessService) Retrieve(projectID, processID string) (r Process, err error) {
+	resp, err := c.get(c.Ctx(), pathProcessByID(projectID, processID), &r)
+
+	if err != nil {
+		return
+	}
+	return r, apiError(resp)
+}
+
+func pathProcessByID(projectID, processID string) string {
+	return fmt.Sprintf("%s/%s/%s/%s", pathProjects, projectID, pathProcesses, processID)
+}

@@ -28,6 +28,7 @@ type Api struct {
 	Translations         func() *TranslationService
 	TranslationStatuses  func() *TranslationStatusService
 	Webhooks             func() *WebhookService
+	Processes            func() *ProcessService
 }
 
 type ClientOption func(*Api) error
@@ -75,6 +76,8 @@ func New(apiToken string, options ...ClientOption) (*Api, error) {
 
 	c.Webhooks = func() *WebhookService { return &WebhookService{bs} }
 	c.Files = func() *FileService { return &FileService{BaseService: bs, opts: fOpts} }
+
+	c.Processes = func() *ProcessService { return &ProcessService{bs} }
 
 	return &c, nil
 }
