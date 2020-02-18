@@ -44,6 +44,7 @@ type FileUpload struct {
 	ApplyTM                bool  `json:"apply_tm,omitempty"`
 	HiddenFromContributors bool  `json:"hidden_from_contributors,omitempty"`
 	CleanupMode            bool  `json:"cleanup_mode,omitempty"`
+	Queue                  bool  `json:"queue,omitempty"`
 }
 
 type FileDownload struct {
@@ -108,6 +109,14 @@ type FileUploadResponse struct {
 	Result   FileUploadResult `json:"result"`
 }
 
+type FileUploadQueuedResponse struct {
+	WithProjectID
+	ProcessID string `json:"process_id"`
+	Filename  string `json:"file"`
+	KeyCount  int    `json:"key_count"`
+	WordCount int    `json:"word_count"`
+}
+
 type FileDownloadResponse struct {
 	WithProjectID
 	BundleURL string `json:"bundle_url"`
@@ -128,6 +137,17 @@ func (c *FileService) List(projectID string) (r FilesResponse, err error) {
 }
 
 func (c *FileService) Upload(projectID string, file FileUpload) (r FileUploadResponse, err error) {
+	file.Queue = false
+	resp, err := c.post(c.Ctx(), fmt.Sprintf("%s/%s/%s/%s", pathProjects, projectID, pathFiles, "upload"), &r, file)
+
+	if err != nil {
+		return
+	}
+	return r, apiError(resp)
+}
+
+func (c *FileService) UploadQueued(projectID string, file FileUpload) (r FileUploadQueuedResponse, err error) {
+	file.Queue = true
 	resp, err := c.post(c.Ctx(), fmt.Sprintf("%s/%s/%s/%s", pathProjects, projectID, pathFiles, "upload"), &r, file)
 
 	if err != nil {

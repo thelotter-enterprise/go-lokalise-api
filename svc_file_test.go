@@ -155,3 +155,63 @@ func TestFileService_Upload(t *testing.T) {
 		t.Errorf("Files.Upload returned %+v, want %+v", r, want)
 	}
 }
+
+func TestFileService_UploadQueued(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	mux.HandleFunc(
+		fmt.Sprintf("/projects/%s/files/upload", testProjectID),
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusAccepted)
+			testMethod(t, r, "POST")
+			testHeader(t, r, apiTokenHeader, testApiToken)
+			data := `{
+				"data": "D94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGL.....",
+				"filename": "index.json",
+				"lang_iso": "en",
+				"tags": [
+					"index", "admin", "v2.0"
+				],
+				"convert_placeholders": true,
+				"queue": true
+			}`
+
+			req := new(bytes.Buffer)
+			_ = json.Compact(req, []byte(data))
+
+			testBody(t, r, req.String())
+
+			_, _ = fmt.Fprint(w, `{
+				"project_id": "`+testProjectID+`",
+				"file": "index.json",
+				"key_count": 12,
+				"word_count": 13
+			}`)
+		})
+
+	r, err := client.Files().UploadQueued(testProjectID, FileUpload{
+		Data:                "D94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGL.....",
+		Filename:            "index.json",
+		LangISO:             "en",
+		Tags:                []string{"index", "admin", "v2.0"},
+		ConvertPlaceholders: Bool(true),
+	})
+	if err != nil {
+		t.Errorf("Files.UploadQueued returned error: %v", err)
+	}
+
+	want := FileUploadQueuedResponse{
+		WithProjectID: WithProjectID{
+			ProjectID: testProjectID,
+		},
+		Filename:  "index.json",
+		KeyCount:  12,
+		WordCount: 13,
+	}
+
+	if !reflect.DeepEqual(r, want) {
+		t.Errorf("Files.UploadQueued returned %+v, want %+v", r, want)
+	}
+}
