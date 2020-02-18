@@ -26,8 +26,8 @@ type Process struct {
 	Status    string `json:"status"`
 }
 
-func (c *ProcessService) Retrieve(projectID, processID string) (r Process, err error) {
-	resp, err := c.get(c.Ctx(), pathProcessByID(projectID, processID), &r)
+func (c *ProcessService) Retrieve(processID string) (r Process, err error) {
+	resp, err := c.get(c.Ctx(), pathProcessByID(processID), &r)
 
 	if err != nil {
 		return
@@ -35,6 +35,6 @@ func (c *ProcessService) Retrieve(projectID, processID string) (r Process, err e
 	return r, apiError(resp)
 }
 
-func pathProcessByID(projectID, processID string) string {
-	return fmt.Sprintf("%s/%s/%s/%s", pathProjects, projectID, pathProcesses, processID)
+func pathProcessByID(processID string) string {
+	return fmt.Sprintf("%s/%s", pathProcesses, processID)
 }

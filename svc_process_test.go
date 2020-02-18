@@ -13,7 +13,7 @@ func TestProcessService_Retrieve(t *testing.T) {
 
 	processId := "test"
 	mux.HandleFunc(
-		fmt.Sprintf("/projects/%s/processes/%s", testProjectID, processId),
+		fmt.Sprintf("/processes/%s", processId),
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			testMethod(t, r, "GET")
@@ -26,7 +26,7 @@ func TestProcessService_Retrieve(t *testing.T) {
 			}`)
 		})
 
-	r, err := client.Processes().Retrieve(testProjectID, processId)
+	r, err := client.Processes().Retrieve(processId)
 	if err != nil {
 		t.Errorf("Processes.Retrieve returned error: %v", err)
 	}
