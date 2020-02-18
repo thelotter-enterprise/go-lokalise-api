@@ -26,6 +26,7 @@ type Process struct {
 	Status    string `json:"status"`
 }
 
+// Retrieves a Process
 func (c *ProcessService) Retrieve(processID string) (r Process, err error) {
 	resp, err := c.get(c.Ctx(), pathProcessByID(processID), &r)
 
