@@ -36,6 +36,7 @@ func TestTaskService_Create(t *testing.T) {
 				],
 				"auto_close_languages": true,
 				"auto_close_task": true,
+				"auto_close_items": true,
 				"task_type": "translation",
 				"parent_task_id": 12345,
 				"closing_tags": ["tag_one", "tag_two"],
@@ -54,7 +55,7 @@ func TestTaskService_Create(t *testing.T) {
 					"task_id": 55392,
 					"title": "Voicemail messages",
 					"description": "Need your help with some voicemail message translation. Thanks!",
-					"status": "in progress",
+					"status": "in_progress",
 					"progress": 0,
 					"can_be_parent": true,
 					"task_type": "review",
@@ -95,6 +96,7 @@ func TestTaskService_Create(t *testing.T) {
 					],
 					"auto_close_languages": true,
 					"auto_close_task": true,
+					"auto_close_items": true,
 					"completed_at": null,
 					"completed_at_timestamp": null,
 					"completed_by": null,
@@ -115,6 +117,7 @@ func TestTaskService_Create(t *testing.T) {
 		Keys:                       []int64{11212, 11241, 11245},
 		AutoCloseLanguages:         Bool(true),
 		AutoCloseTask:              Bool(true),
+		AutoCloseItems:             Bool(true),
 		TaskType:                   "translation",
 		ParentTaskID:               12345,
 		ClosingTags:                []string{"tag_one", "tag_two"},
@@ -137,7 +140,7 @@ func TestTaskService_Create(t *testing.T) {
 		TaskID:           55392,
 		Title:            "Voicemail messages",
 		Description:      "Need your help with some voicemail message translation. Thanks!",
-		Status:           "in progress",
+		Status:           StatusInProgress,
 		Progress:         0,
 		DueDate:          "2018-12-31 12:00:00 (Etc/UTC)",
 		KeysCount:        3,
@@ -174,6 +177,7 @@ func TestTaskService_Create(t *testing.T) {
 		},
 		AutoCloseLanguages:         true,
 		AutoCloseTask:              true,
+		AutoCloseItems:             true,
 		CompletedAt:                "",
 		CompletedAtTs:              0,
 		CompletedBy:                0,
@@ -182,7 +186,7 @@ func TestTaskService_Create(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(r.Task, want) {
-		t.Errorf("Tasks.Create returned %+v, want %+v", r.Task, want)
+		t.Errorf(assertionTemplate, "Tasks.Create", r.Task, want)
 	}
 }
 
@@ -217,7 +221,7 @@ func TestTaskService_Delete(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(r, want) {
-		t.Errorf("Tasks.Delete returned %+v, want %+v", r, want)
+		t.Errorf(assertionTemplate, "Tasks.Delete", r, want)
 	}
 }
 
@@ -254,7 +258,7 @@ func TestTaskService_List(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(r.Tasks, want) {
-		t.Errorf("Tasks.List returned %+v, want %+v", r.Tasks, want)
+		t.Errorf(assertionTemplate, "Tasks.List", r.Tasks, want)
 	}
 }
 
@@ -287,7 +291,7 @@ func TestTaskService_Retrieve(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(r.Task, want) {
-		t.Errorf("Tasks.Retrieve returned %+v, want %+v", r.Task, want)
+		t.Errorf(assertionTemplate, "Tasks.Retrieve", r.Task, want)
 	}
 }
 
@@ -304,7 +308,8 @@ func TestTaskService_Update(t *testing.T) {
 			data := `{
 				"due_date": "2019-12-31 12:00:00",
 				"auto_close_languages": false,
-				"auto_close_task": false
+				"auto_close_task": false,
+				"auto_close_items": false
 			}`
 
 			req := new(bytes.Buffer)
@@ -324,6 +329,7 @@ func TestTaskService_Update(t *testing.T) {
 		DueDate:            "2019-12-31 12:00:00",
 		AutoCloseLanguages: Bool(false),
 		AutoCloseTask:      Bool(false),
+		AutoCloseItems:     Bool(false),
 	})
 	if err != nil {
 		t.Errorf("Tasks.Update returned error: %v", err)
@@ -334,6 +340,6 @@ func TestTaskService_Update(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(r.Task, want) {
-		t.Errorf("Tasks.Update returned %+v, want %+v", r.Task, want)
+		t.Errorf(assertionTemplate, "Tasks.Update", r.Task, want)
 	}
 }
