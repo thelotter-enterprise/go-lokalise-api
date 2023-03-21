@@ -20,6 +20,7 @@ type Api struct {
 	Projects             func() *ProjectService
 	QueuedProcesses      func() *QueuedProcessService
 	Screenshots          func() *ScreenshotService
+	Segments             func() *SegmentationService
 	Snapshots            func() *SnapshotService
 	Tasks                func() *TaskService
 	Teams                func() *TeamService
@@ -65,6 +66,7 @@ func New(apiToken string, options ...ClientOption) (*Api, error) {
 	c.Tasks = func() *TaskService { return &TaskService{BaseService: bs, listOpts: taskOpts} }
 
 	c.Screenshots = func() *ScreenshotService { return &ScreenshotService{BaseService: bs, listOpts: scOpts} }
+	c.Segments = func() *SegmentationService { return &SegmentationService{BaseService: bs} }
 	c.Snapshots = func() *SnapshotService { return &SnapshotService{bs} }
 	c.Languages = func() *LanguageService { return &LanguageService{bs} }
 	c.Translations = func() *TranslationService { return &TranslationService{BaseService: bs, opts: trOpts} }
@@ -84,7 +86,7 @@ func New(apiToken string, options ...ClientOption) (*Api, error) {
 // WithBaseURL returns a ClientOption setting the base URL of the client.
 // This should only be used for testing different API versions or for using a mocked
 // backend in tests.
-//noinspection GoUnusedExportedFunction
+// noinspection GoUnusedExportedFunction
 func WithBaseURL(url string) ClientOption {
 	return func(c *Api) error {
 		c.httpClient.Client.SetHostURL(url)
@@ -106,7 +108,7 @@ func WithRetryCount(count int) ClientOption {
 
 // Sets default wait time to sleep before retrying request.
 // Default is 100 milliseconds.
-//noinspection GoUnusedExportedFunction
+// noinspection GoUnusedExportedFunction
 func WithRetryTimeout(t time.Duration) ClientOption {
 	return func(c *Api) error {
 		c.httpClient.Client.SetRetryWaitTime(t)

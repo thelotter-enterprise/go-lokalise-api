@@ -12,7 +12,7 @@ type TeamUserService struct {
 // Service entity objects
 // _____________________________________________________________________________________________________________________
 
-//noinspection GoUnusedConst
+// noinspection GoUnusedConst
 const (
 	TeamUserRoleOwner  TeamUserRole = "owner"
 	TeamUserRoleAdmin  TeamUserRole = "admin"
@@ -55,7 +55,7 @@ type TeamUsersResponse struct {
 // _____________________________________________________________________________________________________________________
 
 func (c *TeamUserService) List(teamID int64) (r TeamUsersResponse, err error) {
-	resp, err := c.getList(c.Ctx(), pathTeamUsers(teamID), &r, c.PageOpts())
+	resp, err := c.getWithOptions(c.Ctx(), pathTeamUsers(teamID), &r, c.PageOpts())
 
 	if err != nil {
 		return
