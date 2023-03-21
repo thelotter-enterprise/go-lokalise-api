@@ -48,9 +48,10 @@ type Key struct {
 	CharLimit        int    `json:"char_limit"`
 	CustomAttributes string `json:"custom_attributes,omitempty"`
 
-	ModifiedAt               string `json:"modified_at,omitempty"`
-	ModifiedAtTs             int64  `json:"modified_at_timestamp,omitempty"`
-	TranslationsModifiedAtTs int64  `json:"translations_modified_at_timestamp"`
+	ModifiedAt   string `json:"modified_at,omitempty"`
+	ModifiedAtTs int64  `json:"modified_at_timestamp,omitempty"`
+
+	TranslationsModifiedAtTs int64 `json:"translations_modified_at_timestamp"`
 }
 
 type PlatformStrings struct {

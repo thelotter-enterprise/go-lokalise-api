@@ -212,8 +212,9 @@ func (c *TaskService) Delete(projectID string, taskID int64) (r DeleteTaskRespon
 // _____________________________________________________________________________________________________________________
 
 type TaskListOptions struct {
-	Limit          uint         `url:"limit,omitempty"`
-	Page           uint         `url:"page,omitempty"`
+	Limit uint `url:"limit,omitempty"`
+	Page  uint `url:"page,omitempty"`
+
 	Title          string       `url:"filter_title,omitempty"`
 	FilterTitle    string       `url:"filter_title,omitempty"`
 	FilterStatuses []TaskStatus `url:"filter_statuses,omitempty"`
